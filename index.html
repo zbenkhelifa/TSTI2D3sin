@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Créer un compte GitHub</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --border: #30363d;
+    --green: #3fb950;
+    --green-dim: #1a4a2e;
+    --blue: #58a6ff;
+    --blue-dim: #1a2d4a;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --orange: #f0883e;
+    --purple: #bc8cff;
+    --red: #f85149;
+  }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--text);
+    user-select: none;
+  }
+
+  /* ── SLIDES CONTAINER ── */
+  .slides-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .slides-track {
+    display: flex;
+    height: 100%;
+    transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+  }
+
+  .slide {
+    flex: 0 0 100vw;
+    width: 100vw;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ── SLIDE 0 : HERO ── */
+  .slide-hero {
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, #1a3a5c 0%, #0d1117 60%);
+  }
+  .hero-octocat {
+    font-size: 5rem;
+    margin-bottom: 1rem;
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-10px); }
+  }
+  .hero-title {
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    font-weight: 800;
+    text-align: center;
+    line-height: 1.15;
+    margin-bottom: .75rem;
+  }
+  .hero-title span { color: var(--blue); }
+  .hero-sub {
+    color: var(--muted);
+    font-size: 1rem;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    max-width: 340px;
+  }
+  .badge-row {
+    display: flex;
+    gap: .6rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+  }
+  .badge {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: .3rem .9rem;
+    font-size: .8rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+  }
+  .badge .dot { width: 7px; height: 7px; border-radius: 50%; }
+  .start-btn {
+    background: var(--green);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    padding: .8rem 2.2rem;
+    cursor: pointer;
+    letter-spacing: .02em;
+    transition: background .2s, transform .1s;
+  }
+  .start-btn:hover { background: #4ac861; }
+  .start-btn:active { transform: scale(.97); }
+
+  /* ── STEP SLIDES ── */
+  .slide-step {
+    background: var(--bg);
+  }
+  .step-inner {
+    width: 100%;
+    max-width: 540px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  .step-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    background: var(--blue-dim);
+    border: 1px solid var(--blue);
+    color: var(--blue);
+    border-radius: 20px;
+    padding: .25rem .85rem;
+    font-size: .78rem;
+    font-weight: 600;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    align-self: flex-start;
+  }
+  .step-title {
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    font-weight: 800;
+    line-height: 1.2;
+  }
+  .step-desc {
+    color: var(--muted);
+    font-size: .97rem;
+    line-height: 1.7;
+  }
+  .step-desc b { color: var(--text); font-weight: 600; }
+  .code-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .75rem 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .9rem;
+    color: var(--blue);
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+  }
+  .code-block::before {
+    content: '$';
+    color: var(--muted);
+    font-size: .8rem;
+  }
+
+  /* Info / Warning boxes */
+  .info-box, .warn-box {
+    border-radius: 8px;
+    padding: .75rem 1rem;
+    font-size: .88rem;
+    line-height: 1.6;
+    display: flex;
+    gap: .6rem;
+    align-items: flex-start;
+  }
+  .info-box {
+    background: var(--green-dim);
+    border: 1px solid var(--green);
+    color: #7ee787;
+  }
+  .warn-box {
+    background: #2d1a00;
+    border: 1px solid var(--orange);
+    color: var(--orange);
+  }
+  .box-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+
+  /* Visual mockup hint */
+  .mockup {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem;
+    font-size: .85rem;
+    color: var(--muted);
+  }
+  .mockup-bar {
+    display: flex;
+    gap: .4rem;
+    margin-bottom: .75rem;
+  }
+  .mockup-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .m-red { background: #f85149; }
+  .m-yellow { background: #f0883e; }
+  .m-green { background: var(--green); }
+  .mockup-url {
+    background: #0d1117;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: .35rem .75rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .8rem;
+    color: var(--blue);
+    text-align: center;
+    margin-bottom: .5rem;
+  }
+  .mockup-label {
+    text-align: center;
+    font-size: .78rem;
+    color: var(--muted);
+  }
+
+  /* ── SLIDE FINAL ── */
+  .slide-final {
+    background: radial-gradient(ellipse 80% 60% at 50% 100%, #1a3a2c 0%, #0d1117 60%);
+  }
+  .final-icon { font-size: 4rem; margin-bottom: 1rem; }
+  .final-title {
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: .5rem;
+  }
+  .final-title span { color: var(--green); }
+  .final-sub {
+    color: var(--muted);
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: .95rem;
+    max-width: 360px;
+  }
+  .next-steps {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    margin-bottom: 2rem;
+  }
+  .next-item {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .6rem 1rem;
+    font-size: .9rem;
+  }
+  .next-item .ni-icon { font-size: 1.2rem; }
+  .next-item .ni-text { color: var(--muted); }
+  .next-item .ni-text b { color: var(--text); display: block; font-size: .88rem; }
+  .restart-btn {
+    background: transparent;
+    color: var(--blue);
+    border: 1px solid var(--blue);
+    font-family: 'Inter', sans-serif;
+    font-size: .9rem;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: .6rem 1.6rem;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .restart-btn:hover { background: var(--blue-dim); }
+
+  /* ── PROGRESS BAR ── */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    background: var(--blue);
+    transition: width .4s ease;
+    z-index: 100;
+  }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    background: linear-gradient(transparent, var(--bg) 40%);
+    z-index: 50;
+  }
+  .nav-btn {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: .88rem;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: .5rem 1.1rem;
+    cursor: pointer;
+    transition: background .15s, border-color .15s, opacity .2s;
+  }
+  .nav-btn:hover { background: #21262d; border-color: var(--blue); }
+  .nav-btn:disabled { opacity: .2; pointer-events: none; }
+  .nav-btn.primary {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: #fff;
+  }
+  .nav-btn.primary:hover { background: #79b8ff; border-color: #79b8ff; }
+  .nav-arrow { font-size: 1rem; }
+
+  /* Dots */
+  .dots {
+    display: flex;
+    gap: .45rem;
+    align-items: center;
+  }
+  .dot-item {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background .3s, width .3s;
+  }
+  .dot-item.active {
+    background: var(--blue);
+    width: 18px;
+    border-radius: 3px;
+  }
+
+  /* ── SWIPE HINT ── */
+  .swipe-hint {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--muted);
+    font-size: .75rem;
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+    opacity: 1;
+    transition: opacity .5s;
+    pointer-events: none;
+  }
+  .swipe-hint.hidden { opacity: 0; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 420px) {
+    .slide { padding: 1.5rem 1.2rem 5rem; }
+    .nav-btn span { display: none; }
+    .nav-btn { padding: .5rem .8rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="slides-wrapper" id="slidesWrapper">
+  <div class="slides-track" id="slidesTrack">
+
+    <!-- ── SLIDE 0 : HERO ── -->
+    <div class="slide slide-hero">
+      <div class="hero-octocat">🐙</div>
+      <h1 class="hero-title">Créer un compte<br><span>GitHub</span></h1>
+      <p class="hero-sub">Guide interactif étape par étape — même sans expérience</p>
+      <div class="badge-row">
+        <div class="badge"><div class="dot" style="background:#3fb950"></div> Gratuit</div>
+        <div class="badge"><div class="dot" style="background:#58a6ff"></div> 5 minutes</div>
+        <div class="badge"><div class="dot" style="background:#bc8cff"></div> 8 étapes</div>
+      </div>
+      <button class="start-btn" onclick="goTo(1)">Commencer →</button>
+    </div>
+
+    <!-- ── SLIDE 1 ── -->
+    <div class="slide slide-step">
+      <div class="step-inner">
+        <span class="step-chip">Étape 1 / 8</span>
+        <h2 class="step-title">Accéder au site GitHub</h2>
+        <p class="step-desc">Ouvre ton navigateur (Chrome, Firefox, Edge…) et tape l'adresse suivante dans la barre d'URL :</p>
+        <div class="code-block">github.com</div>
+        <div class="mockup">
+          <div class="mockup-bar">
+            <div class="mockup-dot m-red"></div>
+            <div class="mockup-dot m-yellow"></div>
+            <div class="mockup-dot m-green"></div>
+          </div>
+          <div class="mockup-url">🔒 github.com</div>
+          <div class="mockup-label">Tu arrives sur la page d'accueil de GitHub</div>
+        </div>
+        <p class="step-desc">Une fois sur la page, cherche le bouton <b>Sign up</b> en haut à droite et clique dessus.</p>
+      </div>
+    </div>
+
+    <!-- ── SLIDE 2 ── -->
+    <div class="slide slide-step">
+      <div class="step-inner">
+        <span class="step-chip">Étape 2 / 8</span>
+        <h2 class="step-title">Entrer ton adresse e-mail</h2>
+        <p class="step-desc">La première chose demandée est ton <b>adresse e-mail</b>. Saisis-la dans le champ, puis clique sur <b>Continue</b>.</p>
+        <div class="info-box">
+          <span class="box-icon">✅</span>
+          <span>Utilise une adresse à laquelle tu as accès — tu devras confirmer ton inscription par e-mail. Une adresse Gmail ou scolaire convient parfaitement.</span>
+        </div>
+        <p class="step-desc">GitHub vérifie que l'adresse n'est pas déjà utilisée. Si c'est le cas, utilises-en une autre ou connecte-toi à ton compte existant.</p>
+      </div>
+    </div>
+
+    <!-- ── SLIDE 3 ── -->
+    <div class="slide slide-step">
+      <div class="step-inner">
+        <span class="step-chip">Étape 3 / 8</span>
+        <h2 class="step-title">Choisir un mot de passe</h2>
+        <p class="step-desc">Crée un mot de passe sécurisé. GitHub recommande au moins <b>15 caractères</b>, ou 8 caractères minimum avec des chiffres et symboles.</p>
+        <div class="warn-box">
+          <span class="box-icon">⚠️</span>
+          <span>Note ton mot de passe dans un endroit sûr (gestionnaire de mots de passe, carnet…). Il ne peut pas être récupéré si tu l'oublies.</span>
+        </div>
+        <p class="step-desc">GitHub t'indique en temps réel si le mot de passe est assez solide — attends le feu vert avant de cliquer <b>Continue</b>.</p>
+      </div>
+    </div>
+
+    <!-- ── SLIDE 4 ── -->
+    <div class="slide slide-step">
+      <div class="step-inner">
+        <span class="step-chip">Étape 4 / 8</span>
+        <h2 class="step-title">Choisir un nom d'utilisateur</h2>
+        <p class="step-desc">Ton <b>username</b> est ton identité publique sur GitHub. Il apparaîtra dans toutes tes URLs :</p>
+        <div class="code-block">github.com/ton-username</div>
+        <div class="info-box">
+          <span class="box-icon">💡</span>
+          <span>Choisis quelque chose de professionnel : <b>prenom-nom</b> ou <b>prenomnom</b>. Pas d'espaces ni de caractères spéciaux (seul le tiret <b>-</b> est autorisé).</span>
+        </div>
+        <p class="step-desc">Si le nom est déjà pris, GitHub te propose des alternatives. Une fois satisfait, clique sur <b>Continue</b>.</p>
+      </div>
+    </div>
+
+    <!-- ── SLIDE 5 ── -->
+    <div class="slide slide-step">
+      <div class="step-inner">
+        <span class="step-chip">Étape 5 / 8</span>
+        <h2 class="step-title">Préférences e-mail</h2>
+        <p class="step-desc">GitHub demande si tu veux recevoir des <b>e-mails de communication</b> sur les nouveautés du produit.</p>
+        <p class="step-desc">Tape <b>y</b> pour oui ou <b>n</b> pour non, puis clique sur <b>Continue</b>.</p>
+        <div class="info-box">
+          <span class="box-icon">ℹ️</span>
+          <span>Ce choix n'a aucun impact sur les e-mails de sécurité ou de vérification — ceux-ci arrivent toujours quoi qu'il arrive.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SLIDE 6 ── -->
+    <div class="slide slide-step">
+      <div class="step-inner">
+        <span class="step-chip">Étape 6 / 8</span>
+        <h2 class="step-title">Vérification humaine</h2>
+        <p class="step-desc">GitHub affiche un <b>CAPTCHA</b> — un petit test visuel pour s'assurer que tu n'es pas un robot.</p>
+        <p class="step-desc">Suis les instructions à l'écran (cliquer sur des images, résoudre un puzzle…). Une fois le test réussi, le bouton <b>Create account</b> devient cliquable.</p>
+        <div class="info-box">
+          <span class="box-icon">💡</span>
+          <span>Si le puzzle ne se charge pas, recharge la page ou essaie dans un autre navigateur.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SLIDE 7 ── -->
+    <div class="slide slide-step">
+      <div class="step-inner">
+        <span class="step-chip">Étape 7 / 8</span>
+        <h2 class="step-title">Vérifier ton e-mail</h2>
+        <p class="step-desc">GitHub envoie un <b>code de vérification à 6 chiffres</b> à l'adresse que tu as indiquée. Ouvre ta boîte mail et cherche un message de <b>noreply@github.com</b>.</p>
+        <p class="step-desc">Copie le code et colle-le dans les cases affichées sur le site. Ton compte est instantanément activé.</p>
+        <div class="warn-box">
+          <span class="box-icon">📬</span>
+          <span>Tu ne vois pas l'e-mail ? Vérifie le dossier <b>Spam</b> ou <b>Indésirables</b>. Le code expire au bout de 15 minutes.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SLIDE 8 ── -->
+    <div class="slide slide-step">
+      <div class="step-inner">
+        <span class="step-chip">Étape 8 / 8</span>
+        <h2 class="step-title">Personnaliser ton profil</h2>
+        <p class="step-desc">GitHub propose quelques questions sur ton expérience et tes objectifs. C'est <b>facultatif</b> : tu peux tout remplir ou cliquer sur <b>Skip personalization</b>.</p>
+        <p class="step-desc">Tu arrives ensuite sur ton <b>dashboard</b> — le tableau de bord de ton compte. C'est tout !</p>
+        <div class="info-box">
+          <span class="box-icon">🎉</span>
+          <span>Compte créé avec succès. Tu peux maintenant créer ton premier dépôt, explorer des projets open source et collaborer avec d'autres développeurs.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SLIDE FINAL ── -->
+    <div class="slide slide-final">
+      <div class="final-icon">🎉</div>
+      <h2 class="final-title">Compte créé,<br><span>et maintenant ?</span></h2>
+      <p class="final-sub">Quelques premières actions pour bien démarrer sur GitHub</p>
+      <div class="next-steps">
+        <div class="next-item">
+          <span class="ni-icon">🗂️</span>
+          <div class="ni-text"><b>Créer un dépôt (repository)</b>Clique sur "New" depuis le dashboard</div>
+        </div>
+        <div class="next-item">
+          <span class="ni-icon">⭐</span>
+          <div class="ni-text"><b>Explorer des projets</b>Mets des étoiles aux projets intéressants</div>
+        </div>
+        <div class="next-item">
+          <span class="ni-icon">🔑</span>
+          <div class="ni-text"><b>Activer l'authentification 2FA</b>Settings → Password and authentication</div>
+        </div>
+        <div class="next-item">
+          <span class="ni-icon">📝</span>
+          <div class="ni-text"><b>Compléter ton profil</b>Ajoute une photo, une bio et tes liens</div>
+        </div>
+      </div>
+      <button class="restart-btn" onclick="goTo(0)">↩ Revoir le guide</button>
+    </div>
+
+  </div><!-- /slides-track -->
+</div><!-- /slides-wrapper -->
+
+<!-- Swipe hint -->
+<div class="swipe-hint" id="swipeHint">← Balayez pour naviguer →</div>
+
+<!-- Bottom nav -->
+<div class="bottom-nav">
+  <button class="nav-btn" id="btnPrev" onclick="prev()" disabled>
+    <span class="nav-arrow">←</span> <span>Précédent</span>
+  </button>
+  <div class="dots" id="dotsContainer"></div>
+  <button class="nav-btn primary" id="btnNext" onclick="next()">
+    <span>Suivant</span> <span class="nav-arrow">→</span>
+  </button>
+</div>
+
+<script>
+  const TOTAL = 10; // 0=hero, 1-8=steps, 9=final
+  let current = 0;
+  let startX = 0;
+  let isDragging = false;
+  let hintHidden = false;
+
+  const track = document.getElementById('slidesTrack');
+  const progressBar = document.getElementById('progressBar');
+  const btnPrev = document.getElementById('btnPrev');
+  const btnNext = document.getElementById('btnNext');
+  const dotsContainer = document.getElementById('dotsContainer');
+  const swipeHint = document.getElementById('swipeHint');
+
+  // Build dots
+  for (let i = 0; i < TOTAL; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot-item' + (i === 0 ? ' active' : '');
+    d.onclick = () => goTo(i);
+    d.style.cursor = 'pointer';
+    dotsContainer.appendChild(d);
+  }
+
+  function update() {
+    track.style.transform = `translateX(-${current * 100}vw)`;
+    progressBar.style.width = `${(current / (TOTAL - 1)) * 100}%`;
+    btnPrev.disabled = current === 0;
+    btnNext.disabled = current === TOTAL - 1;
+
+    // Update dots
+    document.querySelectorAll('.dot-item').forEach((d, i) => {
+      d.classList.toggle('active', i === current);
+    });
+
+    // Change next btn label on last step
+    if (current === TOTAL - 2) {
+      btnNext.innerHTML = '<span>Terminer</span> <span class="nav-arrow">🎉</span>';
+    } else if (current === TOTAL - 1) {
+      btnNext.disabled = true;
+    } else {
+      btnNext.innerHTML = '<span>Suivant</span> <span class="nav-arrow">→</span>';
+    }
+  }
+
+  function goTo(n) {
+    current = Math.max(0, Math.min(TOTAL - 1, n));
+    update();
+    if (!hintHidden && current > 0) {
+      hintHidden = true;
+      swipeHint.classList.add('hidden');
+    }
+  }
+
+  function next() { goTo(current + 1); }
+  function prev() { goTo(current - 1); }
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next();
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   prev();
+  });
+
+  // Touch swipe
+  const wrapper = document.getElementById('slidesWrapper');
+  wrapper.addEventListener('touchstart', e => {
+    startX = e.touches[0].cl
