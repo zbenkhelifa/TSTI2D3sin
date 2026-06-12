@@ -3,472 +3,692 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TSTI2D3 SIN — Guides</title>
+<title>Créer un compte GitHub</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
   :root {
-    --bg: #0d1117; --surface: #161b22; --surface2: #21262d;
-    --border: #30363d; --green: #3fb950; --green-dim: #1a4a2e;
-    --blue: #58a6ff; --blue-dim: #1a2d4a; --text: #e6edf3;
-    --muted: #8b949e; --orange: #f0883e; --sidebar-w: 280px;
+    --bg: #0d1117;
+    --surface: #161b22;
+    --border: #30363d;
+    --green: #3fb950;
+    --green-dim: #1a4a2e;
+    --blue: #58a6ff;
+    --blue-dim: #1a2d4a;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --orange: #f0883e;
+    --purple: #bc8cff;
+    --red: #f85149;
   }
-  html, body { height: 100%; overflow: hidden; background: var(--bg);
-    font-family: 'Inter', system-ui, sans-serif; color: var(--text); }
 
-  .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); opacity: 0; pointer-events: none; transition: opacity .3s; z-index: 200; }
-  .sidebar-overlay.open { opacity: 1; pointer-events: all; }
-  .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); background: var(--surface); border-right: 1px solid var(--border); transform: translateX(-100%); transition: transform .35s cubic-bezier(.4,0,.2,1); z-index: 201; display: flex; flex-direction: column; overflow: hidden; }
-  .sidebar.open { transform: translateX(0); }
-  .sidebar-header { padding: 1.2rem 1rem 1rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-  .sidebar-header h2 { font-size: 1rem; font-weight: 700; }
-  .sidebar-header span { font-size: .75rem; color: var(--muted); margin-top: 2px; display: block; }
-  .sidebar-close { background: none; border: none; color: var(--muted); font-size: 1.3rem; cursor: pointer; padding: .2rem .4rem; border-radius: 6px; transition: background .15s; }
-  .sidebar-close:hover { background: var(--surface2); color: var(--text); }
-  .sidebar-list { flex: 1; overflow-y: auto; padding: .75rem 0; }
-  .sidebar-list::-webkit-scrollbar { width: 4px; }
-  .sidebar-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-  .guide-item { display: flex; align-items: center; gap: .75rem; padding: .75rem 1rem; cursor: pointer; transition: background .15s; border-left: 3px solid transparent; }
-  .guide-item:hover { background: var(--surface2); }
-  .guide-item.active { background: var(--blue-dim); border-left-color: var(--blue); }
-  .guide-item .gi-icon { font-size: 1.4rem; flex-shrink: 0; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: var(--surface2); border-radius: 8px; }
-  .guide-item.active .gi-icon { background: var(--blue-dim); }
-  .guide-item .gi-info { flex: 1; min-width: 0; }
-  .guide-item .gi-title { font-size: .88rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .guide-item .gi-meta { font-size: .75rem; color: var(--muted); margin-top: 2px; }
-  .guide-item .gi-new { background: var(--green); color: #fff; font-size: .65rem; font-weight: 700; padding: .15rem .45rem; border-radius: 10px; flex-shrink: 0; }
-  .sidebar-section-label { padding: .6rem 1rem .2rem; font-size: .7rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--text);
+    user-select: none;
+  }
 
-  .topbar { position: fixed; top: 0; left: 0; right: 0; height: 48px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 1rem; gap: .75rem; z-index: 100; }
-  .hamburger { background: none; border: none; color: var(--text); font-size: 1.2rem; cursor: pointer; padding: .3rem .4rem; border-radius: 6px; transition: background .15s; flex-shrink: 0; }
-  .hamburger:hover { background: var(--surface2); }
-  .topbar-title { font-size: .9rem; font-weight: 700; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .topbar-badge { font-size: .72rem; color: var(--muted); background: var(--surface2); border: 1px solid var(--border); padding: .15rem .5rem; border-radius: 10px; flex-shrink: 0; }
+  /* ── SLIDES CONTAINER ── */
+  .slides-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+  }
 
-  .progress-bar { position: fixed; top: 48px; left: 0; height: 2px; background: var(--blue); transition: width .4s ease; z-index: 100; }
+  .slides-track {
+    display: flex;
+    height: 100%;
+    transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+  }
 
-  .slides-wrapper { position: fixed; inset: 48px 0 64px 0; overflow: hidden; }
-  .slides-track { display: flex; height: 100%; transition: transform .45s cubic-bezier(.4,0,.2,1); will-change: transform; }
-  .slide { flex: 0 0 100vw; width: 100vw; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem 1.5rem 1rem; overflow-y: auto; }
-  .slide-hero { background: radial-gradient(ellipse 80% 60% at 50% 0%, #1a3a5c 0%, #0d1117 60%); }
-  .slide-step { background: var(--bg); }
-  .slide-final { background: radial-gradient(ellipse 80% 60% at 50% 100%, #1a3a2c 0%, #0d1117 60%); }
+  .slide {
+    flex: 0 0 100vw;
+    width: 100vw;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
 
-  .hero-octocat { font-size: 4rem; margin-bottom: .75rem; animation: float 3s ease-in-out infinite; }
-  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-  .hero-title { font-size: clamp(1.6rem,5vw,2.4rem); font-weight: 800; text-align: center; line-height: 1.15; margin-bottom: .6rem; }
+  /* ── SLIDE 0 : HERO ── */
+  .slide-hero {
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, #1a3a5c 0%, #0d1117 60%);
+  }
+  .hero-octocat {
+    font-size: 5rem;
+    margin-bottom: 1rem;
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-10px); }
+  }
+  .hero-title {
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    font-weight: 800;
+    text-align: center;
+    line-height: 1.15;
+    margin-bottom: .75rem;
+  }
   .hero-title span { color: var(--blue); }
-  .hero-title span.green { color: var(--green); }
-  .hero-sub { color: var(--muted); font-size: .9rem; text-align: center; margin-bottom: 2rem; max-width: 300px; }
-  .badge-row { display: flex; gap: .5rem; flex-wrap: wrap; justify-content: center; margin-bottom: 2rem; }
-  .badge { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: .25rem .75rem; font-size: .78rem; color: var(--muted); display: flex; align-items: center; gap: .35rem; }
-  .badge .dot { width: 6px; height: 6px; border-radius: 50%; }
-  .start-btn { background: var(--green); color: #fff; font-family: 'Inter',sans-serif; font-size: .95rem; font-weight: 700; border: none; border-radius: 8px; padding: .75rem 2rem; cursor: pointer; transition: background .2s; }
+  .hero-sub {
+    color: var(--muted);
+    font-size: 1rem;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    max-width: 340px;
+  }
+  .badge-row {
+    display: flex;
+    gap: .6rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+  }
+  .badge {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: .3rem .9rem;
+    font-size: .8rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+  }
+  .badge .dot { width: 7px; height: 7px; border-radius: 50%; }
+  .start-btn {
+    background: var(--green);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    padding: .8rem 2.2rem;
+    cursor: pointer;
+    letter-spacing: .02em;
+    transition: background .2s, transform .1s;
+  }
   .start-btn:hover { background: #4ac861; }
+  .start-btn:active { transform: scale(.97); }
 
-  .step-inner { width: 100%; max-width: 520px; display: flex; flex-direction: column; gap: 1rem; }
-  .step-chip { display: inline-flex; align-items: center; gap: .4rem; background: var(--blue-dim); border: 1px solid var(--blue); color: var(--blue); border-radius: 20px; padding: .2rem .75rem; font-size: .75rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; align-self: flex-start; }
-  .step-title { font-size: clamp(1.3rem,4vw,1.8rem); font-weight: 800; line-height: 1.2; }
-  .step-desc { color: var(--muted); font-size: .93rem; line-height: 1.7; }
+  /* ── STEP SLIDES ── */
+  .slide-step {
+    background: var(--bg);
+  }
+  .step-inner {
+    width: 100%;
+    max-width: 540px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  .step-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    background: var(--blue-dim);
+    border: 1px solid var(--blue);
+    color: var(--blue);
+    border-radius: 20px;
+    padding: .25rem .85rem;
+    font-size: .78rem;
+    font-weight: 600;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    align-self: flex-start;
+  }
+  .step-title {
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    font-weight: 800;
+    line-height: 1.2;
+  }
+  .step-desc {
+    color: var(--muted);
+    font-size: .97rem;
+    line-height: 1.7;
+  }
   .step-desc b { color: var(--text); font-weight: 600; }
-  .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: .65rem .9rem; font-family: 'JetBrains Mono',monospace; font-size: .88rem; color: var(--blue); display: flex; align-items: center; gap: .5rem; }
-  .code-block::before { content: '$'; color: var(--muted); font-size: .78rem; }
-  .code-block.no-prefix::before { content: ''; }
-  .info-box, .warn-box { border-radius: 8px; padding: .7rem .9rem; font-size: .86rem; line-height: 1.6; display: flex; gap: .5rem; align-items: flex-start; }
-  .info-box { background: var(--green-dim); border: 1px solid var(--green); color: #7ee787; }
-  .warn-box { background: #2d1a00; border: 1px solid var(--orange); color: var(--orange); }
-  .box-icon { font-size: .95rem; flex-shrink: 0; margin-top: 1px; }
-  .mockup { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: .9rem; font-size: .83rem; color: var(--muted); }
-  .mockup-bar { display: flex; gap: .35rem; margin-bottom: .65rem; }
-  .mockup-dot { width: 9px; height: 9px; border-radius: 50%; }
-  .m-red{background:#f85149} .m-yellow{background:#f0883e} .m-green{background:var(--green)}
-  .mockup-url { background: #0d1117; border: 1px solid var(--border); border-radius: 6px; padding: .3rem .7rem; font-family: 'JetBrains Mono',monospace; font-size: .78rem; color: var(--blue); text-align: center; margin-bottom: .4rem; }
-  .mockup-label { text-align: center; font-size: .76rem; color: var(--muted); }
+  .code-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .75rem 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .9rem;
+    color: var(--blue);
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+  }
+  .code-block::before {
+    content: '$';
+    color: var(--muted);
+    font-size: .8rem;
+  }
 
-  /* Choix visuels (public/privé) */
-  .choice-row { display: flex; gap: .6rem; }
-  .choice-card { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: .75rem; display: flex; flex-direction: column; gap: .3rem; }
-  .choice-card.recommended { border-color: var(--green); }
-  .choice-card .cc-icon { font-size: 1.4rem; }
-  .choice-card .cc-title { font-size: .85rem; font-weight: 700; }
-  .choice-card .cc-desc { font-size: .78rem; color: var(--muted); line-height: 1.5; }
-  .choice-card .cc-badge { font-size: .68rem; font-weight: 700; color: var(--green); }
+  /* Info / Warning boxes */
+  .info-box, .warn-box {
+    border-radius: 8px;
+    padding: .75rem 1rem;
+    font-size: .88rem;
+    line-height: 1.6;
+    display: flex;
+    gap: .6rem;
+    align-items: flex-start;
+  }
+  .info-box {
+    background: var(--green-dim);
+    border: 1px solid var(--green);
+    color: #7ee787;
+  }
+  .warn-box {
+    background: #2d1a00;
+    border: 1px solid var(--orange);
+    color: var(--orange);
+  }
+  .box-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
 
-  .final-icon { font-size: 3.5rem; margin-bottom: .75rem; }
-  .final-title { font-size: clamp(1.4rem,4vw,2rem); font-weight: 800; text-align: center; margin-bottom: .4rem; }
+  /* Visual mockup hint */
+  .mockup {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem;
+    font-size: .85rem;
+    color: var(--muted);
+  }
+  .mockup-bar {
+    display: flex;
+    gap: .4rem;
+    margin-bottom: .75rem;
+  }
+  .mockup-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .m-red { background: #f85149; }
+  .m-yellow { background: #f0883e; }
+  .m-green { background: var(--green); }
+  .mockup-url {
+    background: #0d1117;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: .35rem .75rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .8rem;
+    color: var(--blue);
+    text-align: center;
+    margin-bottom: .5rem;
+  }
+  .mockup-label {
+    text-align: center;
+    font-size: .78rem;
+    color: var(--muted);
+  }
+
+  /* ── SLIDE FINAL ── */
+  .slide-final {
+    background: radial-gradient(ellipse 80% 60% at 50% 100%, #1a3a2c 0%, #0d1117 60%);
+  }
+  .final-icon { font-size: 4rem; margin-bottom: 1rem; }
+  .final-title {
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: .5rem;
+  }
   .final-title span { color: var(--green); }
-  .final-sub { color: var(--muted); text-align: center; margin-bottom: 1.2rem; font-size: .9rem; max-width: 320px; }
-  .next-steps { width: 100%; max-width: 380px; display: flex; flex-direction: column; gap: .4rem; margin-bottom: 1.5rem; }
-  .next-item { display: flex; align-items: center; gap: .65rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: .55rem .9rem; font-size: .88rem; }
-  .next-item .ni-icon { font-size: 1.1rem; }
+  .final-sub {
+    color: var(--muted);
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: .95rem;
+    max-width: 360px;
+  }
+  .next-steps {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    margin-bottom: 2rem;
+  }
+  .next-item {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .6rem 1rem;
+    font-size: .9rem;
+  }
+  .next-item .ni-icon { font-size: 1.2rem; }
   .next-item .ni-text { color: var(--muted); }
-  .next-item .ni-text b { color: var(--text); display: block; font-size: .85rem; }
-  .restart-btn { background: transparent; color: var(--blue); border: 1px solid var(--blue); font-family: 'Inter',sans-serif; font-size: .88rem; font-weight: 600; border-radius: 8px; padding: .55rem 1.4rem; cursor: pointer; transition: background .2s; }
+  .next-item .ni-text b { color: var(--text); display: block; font-size: .88rem; }
+  .restart-btn {
+    background: transparent;
+    color: var(--blue);
+    border: 1px solid var(--blue);
+    font-family: 'Inter', sans-serif;
+    font-size: .9rem;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: .6rem 1.6rem;
+    cursor: pointer;
+    transition: background .2s;
+  }
   .restart-btn:hover { background: var(--blue-dim); }
 
-  .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.2rem; background: linear-gradient(transparent, var(--bg) 35%); z-index: 50; }
-  .nav-btn { display: flex; align-items: center; gap: .35rem; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: 'Inter',sans-serif; font-size: .85rem; font-weight: 600; border-radius: 8px; padding: .45rem 1rem; cursor: pointer; transition: background .15s, border-color .15s, opacity .2s; }
-  .nav-btn:hover { background: var(--surface2); border-color: var(--blue); }
-  .nav-btn:disabled { opacity: .2; pointer-events: none; }
-  .nav-btn.primary { background: var(--blue); border-color: var(--blue); color: #fff; }
-  .nav-btn.primary:hover { background: #79b8ff; }
-  .dots { display: flex; gap: .4rem; align-items: center; }
-  .dot-item { width: 6px; height: 6px; border-radius: 50%; background: var(--border); transition: background .3s, width .3s; cursor: pointer; }
-  .dot-item.active { background: var(--blue); width: 16px; border-radius: 3px; }
-  .swipe-hint { position: fixed; bottom: 72px; left: 50%; transform: translateX(-50%); color: var(--muted); font-size: .72rem; opacity: 1; transition: opacity .5s; pointer-events: none; white-space: nowrap; }
-  .swipe-hint.hidden { opacity: 0; }
-  .swipe-zone-left { position: fixed; top: 0; left: 0; bottom: 0; width: 18px; z-index: 150; }
+  /* ── PROGRESS BAR ── */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    background: var(--blue);
+    transition: width .4s ease;
+    z-index: 100;
+  }
 
-  @media (max-width: 380px) {
-    .nav-btn span:not(.nav-arrow) { display: none; }
-    .nav-btn { padding: .45rem .7rem; }
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    background: linear-gradient(transparent, var(--bg) 40%);
+    z-index: 50;
+  }
+  .nav-btn {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: .88rem;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: .5rem 1.1rem;
+    cursor: pointer;
+    transition: background .15s, border-color .15s, opacity .2s;
+  }
+  .nav-btn:hover { background: #21262d; border-color: var(--blue); }
+  .nav-btn:disabled { opacity: .2; pointer-events: none; }
+  .nav-btn.primary {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: #fff;
+  }
+  .nav-btn.primary:hover { background: #79b8ff; border-color: #79b8ff; }
+  .nav-arrow { font-size: 1rem; }
+
+  /* Dots */
+  .dots {
+    display: flex;
+    gap: .45rem;
+    align-items: center;
+  }
+  .dot-item {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background .3s, width .3s;
+  }
+  .dot-item.active {
+    background: var(--blue);
+    width: 18px;
+    border-radius: 3px;
+  }
+
+  /* ── SWIPE HINT ── */
+  .swipe-hint {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--muted);
+    font-size: .75rem;
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+    opacity: 1;
+    transition: opacity .5s;
+    pointer-events: none;
+  }
+  .swipe-hint.hidden { opacity: 0; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 420px) {
+    .slide { padding: 1.5rem 1.2rem 5rem; }
+    .nav-btn span { display: none; }
+    .nav-btn { padding: .5rem .8rem; }
   }
 </style>
 </head>
 <body>
 
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-header">
-    <div><h2>📚 Mes guides</h2><span>TSTI2D3 SIN</span></div>
-    <button class="sidebar-close" onclick="closeSidebar()">✕</button>
-  </div>
-  <div class="sidebar-list" id="sidebarList"></div>
-</aside>
-<div class="swipe-zone-left" id="swipeZoneLeft"></div>
-
-<div class="topbar">
-  <button class="hamburger" onclick="toggleSidebar()">☰</button>
-  <div class="topbar-title" id="topbarTitle"></div>
-  <div class="topbar-badge" id="topbarBadge"></div>
-</div>
 <div class="progress-bar" id="progressBar"></div>
 
 <div class="slides-wrapper" id="slidesWrapper">
-  <div class="slides-track" id="slidesTrack"></div>
-</div>
+  <div class="slides-track" id="slidesTrack">
 
+    <!-- ── SLIDE 0 : HERO ── -->
+    <div class="slide slide-hero">
+      <div class="hero-octocat">🐙</div>
+      <h1 class="hero-title">Créer un compte<br><span>GitHub</span></h1>
+      <p class="hero-sub">Guide interactif étape par étape — même sans expérience</p>
+      <div class="badge-row">
+        <div class="badge"><div class="dot" style="background:#3fb950"></div> Gratuit</div>
+        <div class="badge"><div class="dot" style="background:#58a6ff"></div> 5 minutes</div>
+        <div class="badge"><div class="dot" style="background:#bc8cff"></div> 8 étapes</div>
+      </div>
+      <button class="start-btn" onclick="goTo(1)">Commencer →</button>
+    </div>
+
+    <!-- ── SLIDE 1 ── -->
+    <div class="slide slide-step">
+      <div class="step-inner">
+        <span class="step-chip">Étape 1 / 8</span>
+        <h2 class="step-title">Accéder au site GitHub</h2>
+        <p class="step-desc">Ouvre ton navigateur (Chrome, Firefox, Edge…) et tape l'adresse suivante dans la barre d'URL :</p>
+        <div class="code-block">github.com</div>
+        <div class="mockup">
+          <div class="mockup-bar">
+            <div class="mockup-dot m-red"></div>
+            <div class="mockup-dot m-yellow"></div>
+            <div class="mockup-dot m-green"></div>
+          </div>
+          <div class="mockup-url">🔒 github.com</div>
+          <div class="mockup-label">Tu arrives sur la page d'accueil de GitHub</div>
+        </div>
+        <p class="step-desc">Une fois sur la page, cherche le bouton <b>Sign up</b> en haut à droite et clique dessus.</p>
+      </div>
+    </div>
+
+    <!-- ── SLIDE 2 ── -->
+    <div class="slide slide-step">
+      <div class="step-inner">
+        <span class="step-chip">Étape 2 / 8</span>
+        <h2 class="step-title">Entrer ton adresse e-mail</h2>
+        <p class="step-desc">La première chose demandée est ton <b>adresse e-mail</b>. Saisis-la dans le champ, puis clique sur <b>Continue</b>.</p>
+        <div class="info-box">
+          <span class="box-icon">✅</span>
+          <span>Utilise une adresse à laquelle tu as accès — tu devras confirmer ton inscription par e-mail. Une adresse Gmail ou scolaire convient parfaitement.</span>
+        </div>
+        <p class="step-desc">GitHub vérifie que l'adresse n'est pas déjà utilisée. Si c'est le cas, utilises-en une autre ou connecte-toi à ton compte existant.</p>
+      </div>
+    </div>
+
+    <!-- ── SLIDE 3 ── -->
+    <div class="slide slide-step">
+      <div class="step-inner">
+        <span class="step-chip">Étape 3 / 8</span>
+        <h2 class="step-title">Choisir un mot de passe</h2>
+        <p class="step-desc">Crée un mot de passe sécurisé. GitHub recommande au moins <b>15 caractères</b>, ou 8 caractères minimum avec des chiffres et symboles.</p>
+        <div class="warn-box">
+          <span class="box-icon">⚠️</span>
+          <span>Note ton mot de passe dans un endroit sûr (gestionnaire de mots de passe, carnet…). Il ne peut pas être récupéré si tu l'oublies.</span>
+        </div>
+        <p class="step-desc">GitHub t'indique en temps réel si le mot de passe est assez solide — attends le feu vert avant de cliquer <b>Continue</b>.</p>
+      </div>
+    </div>
+
+    <!-- ── SLIDE 4 ── -->
+    <div class="slide slide-step">
+      <div class="step-inner">
+        <span class="step-chip">Étape 4 / 8</span>
+        <h2 class="step-title">Choisir un nom d'utilisateur</h2>
+        <p class="step-desc">Ton <b>username</b> est ton identité publique sur GitHub. Il apparaîtra dans toutes tes URLs :</p>
+        <div class="code-block">github.com/ton-username</div>
+        <div class="info-box">
+          <span class="box-icon">💡</span>
+          <span>Choisis quelque chose de professionnel : <b>prenom-nom</b> ou <b>prenomnom</b>. Pas d'espaces ni de caractères spéciaux (seul le tiret <b>-</b> est autorisé).</span>
+        </div>
+        <p class="step-desc">Si le nom est déjà pris, GitHub te propose des alternatives. Une fois satisfait, clique sur <b>Continue</b>.</p>
+      </div>
+    </div>
+
+    <!-- ── SLIDE 5 ── -->
+    <div class="slide slide-step">
+      <div class="step-inner">
+        <span class="step-chip">Étape 5 / 8</span>
+        <h2 class="step-title">Préférences e-mail</h2>
+        <p class="step-desc">GitHub demande si tu veux recevoir des <b>e-mails de communication</b> sur les nouveautés du produit.</p>
+        <p class="step-desc">Tape <b>y</b> pour oui ou <b>n</b> pour non, puis clique sur <b>Continue</b>.</p>
+        <div class="info-box">
+          <span class="box-icon">ℹ️</span>
+          <span>Ce choix n'a aucun impact sur les e-mails de sécurité ou de vérification — ceux-ci arrivent toujours quoi qu'il arrive.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SLIDE 6 ── -->
+    <div class="slide slide-step">
+      <div class="step-inner">
+        <span class="step-chip">Étape 6 / 8</span>
+        <h2 class="step-title">Vérification humaine</h2>
+        <p class="step-desc">GitHub affiche un <b>CAPTCHA</b> — un petit test visuel pour s'assurer que tu n'es pas un robot.</p>
+        <p class="step-desc">Suis les instructions à l'écran (cliquer sur des images, résoudre un puzzle…). Une fois le test réussi, le bouton <b>Create account</b> devient cliquable.</p>
+        <div class="info-box">
+          <span class="box-icon">💡</span>
+          <span>Si le puzzle ne se charge pas, recharge la page ou essaie dans un autre navigateur.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SLIDE 7 ── -->
+    <div class="slide slide-step">
+      <div class="step-inner">
+        <span class="step-chip">Étape 7 / 8</span>
+        <h2 class="step-title">Vérifier ton e-mail</h2>
+        <p class="step-desc">GitHub envoie un <b>code de vérification à 6 chiffres</b> à l'adresse que tu as indiquée. Ouvre ta boîte mail et cherche un message de <b>noreply@github.com</b>.</p>
+        <p class="step-desc">Copie le code et colle-le dans les cases affichées sur le site. Ton compte est instantanément activé.</p>
+        <div class="warn-box">
+          <span class="box-icon">📬</span>
+          <span>Tu ne vois pas l'e-mail ? Vérifie le dossier <b>Spam</b> ou <b>Indésirables</b>. Le code expire au bout de 15 minutes.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SLIDE 8 ── -->
+    <div class="slide slide-step">
+      <div class="step-inner">
+        <span class="step-chip">Étape 8 / 8</span>
+        <h2 class="step-title">Personnaliser ton profil</h2>
+        <p class="step-desc">GitHub propose quelques questions sur ton expérience et tes objectifs. C'est <b>facultatif</b> : tu peux tout remplir ou cliquer sur <b>Skip personalization</b>.</p>
+        <p class="step-desc">Tu arrives ensuite sur ton <b>dashboard</b> — le tableau de bord de ton compte. C'est tout !</p>
+        <div class="info-box">
+          <span class="box-icon">🎉</span>
+          <span>Compte créé avec succès. Tu peux maintenant créer ton premier dépôt, explorer des projets open source et collaborer avec d'autres développeurs.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SLIDE FINAL ── -->
+    <div class="slide slide-final">
+      <div class="final-icon">🎉</div>
+      <h2 class="final-title">Compte créé,<br><span>et maintenant ?</span></h2>
+      <p class="final-sub">Quelques premières actions pour bien démarrer sur GitHub</p>
+      <div class="next-steps">
+        <div class="next-item">
+          <span class="ni-icon">🗂️</span>
+          <div class="ni-text"><b>Créer un dépôt (repository)</b>Clique sur "New" depuis le dashboard</div>
+        </div>
+        <div class="next-item">
+          <span class="ni-icon">⭐</span>
+          <div class="ni-text"><b>Explorer des projets</b>Mets des étoiles aux projets intéressants</div>
+        </div>
+        <div class="next-item">
+          <span class="ni-icon">🔑</span>
+          <div class="ni-text"><b>Activer l'authentification 2FA</b>Settings → Password and authentication</div>
+        </div>
+        <div class="next-item">
+          <span class="ni-icon">📝</span>
+          <div class="ni-text"><b>Compléter ton profil</b>Ajoute une photo, une bio et tes liens</div>
+        </div>
+      </div>
+      <button class="restart-btn" onclick="goTo(0)">↩ Revoir le guide</button>
+    </div>
+
+  </div><!-- /slides-track -->
+</div><!-- /slides-wrapper -->
+
+<!-- Swipe hint -->
 <div class="swipe-hint" id="swipeHint">← Balayez pour naviguer →</div>
 
+<!-- Bottom nav -->
 <div class="bottom-nav">
-  <button class="nav-btn" id="btnPrev" onclick="prev()" disabled><span>←</span> <span>Précédent</span></button>
+  <button class="nav-btn" id="btnPrev" onclick="prev()" disabled>
+    <span class="nav-arrow">←</span> <span>Précédent</span>
+  </button>
   <div class="dots" id="dotsContainer"></div>
-  <button class="nav-btn primary" id="btnNext" onclick="next()"><span>Suivant</span> <span>→</span></button>
+  <button class="nav-btn primary" id="btnNext" onclick="next()">
+    <span>Suivant</span> <span class="nav-arrow">→</span>
+  </button>
 </div>
 
 <script>
-const GUIDES = [
-  // ══════════════════════════════════════════════
-  //  GUIDE 2 — Créer un repo GitHub  (actuel)
-  // ══════════════════════════════════════════════
-  {
-    id: 'create-repo',
-    icon: '🗂️',
-    title: 'Créer un dépôt GitHub',
-    date: 'Juin 2026',
-    isNew: true,
-    slides: [
-      {
-        type: 'hero',
-        emoji: '🗂️',
-        title: 'Créer un <span class="green">dépôt</span> GitHub',
-        sub: 'Stocke et partage ton code en quelques clics',
-        badges: [
-          { color: '#3fb950', label: 'Gratuit' },
-          { color: '#58a6ff', label: '3 minutes' },
-          { color: '#bc8cff', label: '6 étapes' },
-        ]
-      },
-      {
-        type: 'step', num: 1, total: 6,
-        title: "C'est quoi un dépôt ?",
-        content: `
-          <p class="step-desc">Un <b>dépôt</b> (ou <b>repository</b> / <b>repo</b>) est un dossier en ligne qui contient tous les fichiers de ton projet ainsi que l'historique de chaque modification.</p>
-          <div class="info-box"><span class="box-icon">💡</span><span>Pense-y comme une clé USB intelligente dans le cloud — accessible partout, avec un historique complet de toutes tes sauvegardes.</span></div>
-          <p class="step-desc">Chaque projet = un dépôt. Tu peux en créer autant que tu veux, gratuitement.</p>`
-      },
-      {
-        type: 'step', num: 2, total: 6,
-        title: 'Accéder à la création',
-        content: `
-          <p class="step-desc">Connecte-toi sur GitHub, puis clique sur le bouton <b>+</b> en haut à droite de la page, et choisis <b>New repository</b>.</p>
-          <div class="mockup">
-            <div class="mockup-bar"><div class="mockup-dot m-red"></div><div class="mockup-dot m-yellow"></div><div class="mockup-dot m-green"></div></div>
-            <div class="mockup-url">🔒 github.com/new</div>
-            <div class="mockup-label">Ou accède directement à cette URL</div>
-          </div>
-          <p class="step-desc">Tu peux aussi aller sur ton profil et cliquer sur l'onglet <b>Repositories</b> puis le bouton vert <b>New</b>.</p>`
-      },
-      {
-        type: 'step', num: 3, total: 6,
-        title: 'Nommer ton dépôt',
-        content: `
-          <p class="step-desc">Donne un <b>nom</b> à ton dépôt dans le champ <b>Repository name</b>. Ce nom apparaîtra dans l'URL :</p>
-          <div class="code-block no-prefix">github.com/username/nom-du-depot</div>
-          <div class="info-box"><span class="box-icon">💡</span><span>Utilise des <b>tirets</b> à la place des espaces. Exemples : <b>mon-projet-snt</b>, <b>tp-python</b>, <b>TSTI2D3SIN</b>. Pas de majuscules accentuées ni d'espaces.</span></div>
-          <p class="step-desc">La <b>description</b> est optionnelle mais recommandée — elle aide à comprendre le sujet du projet.</p>`
-      },
-      {
-        type: 'step', num: 4, total: 6,
-        title: 'Public ou Privé ?',
-        content: `
-          <p class="step-desc">Choisis la <b>visibilité</b> de ton dépôt :</p>
-          <div class="choice-row">
-            <div class="choice-card recommended">
-              <div class="cc-icon">🌍</div>
-              <div class="cc-title">Public</div>
-              <div class="cc-desc">Tout le monde peut voir le code. Idéal pour les projets scolaires.</div>
-              <div class="cc-badge">✓ Recommandé</div>
-            </div>
-            <div class="choice-card">
-              <div class="cc-icon">🔒</div>
-              <div class="cc-title">Privé</div>
-              <div class="cc-desc">Seulement toi (et les personnes invitées) peut voir le code.</div>
-            </div>
-          </div>
-          <div class="info-box" style="margin-top:.2rem"><span class="box-icon">ℹ️</span><span>Tu pourras changer la visibilité à tout moment dans les paramètres du dépôt.</span></div>`
-      },
-      {
-        type: 'step', num: 5, total: 6,
-        title: 'Options de démarrage',
-        content: `
-          <p class="step-desc">Avant de créer, GitHub propose trois options :</p>
-          <div class="info-box"><span class="box-icon">📄</span><span><b>Add a README file</b> — Coche cette case. Le README est la page d'accueil de ton projet, visible directement sur GitHub.</span></div>
-          <div class="warn-box"><span class="box-icon">🚫</span><span><b>.gitignore</b> et <b>License</b> — Laisse vide pour l'instant, tu pourras les ajouter plus tard.</span></div>
-          <p class="step-desc">Clique ensuite sur le bouton vert <b>Create repository</b>.</p>`
-      },
-      {
-        type: 'step', num: 6, total: 6,
-        title: 'Ton dépôt est créé !',
-        content: `
-          <p class="step-desc">Tu arrives sur la page de ton dépôt. Tu vois déjà le fichier <b>README.md</b> affiché. Ton dépôt est accessible à l'adresse :</p>
-          <div class="code-block no-prefix">github.com/username/nom-du-depot</div>
-          <div class="info-box"><span class="box-icon">🎉</span><span>Tu peux dès maintenant <b>ajouter des fichiers</b> en cliquant sur <b>Add file → Create new file</b>, ou uploader des fichiers depuis ton appareil.</span></div>
-          <p class="step-desc">La prochaine étape : apprendre à faire un <b>commit</b> pour sauvegarder tes modifications.</p>`
-      },
-      {
-        type: 'final',
-        title: 'Dépôt créé,<br><span>et maintenant ?</span>',
-        sub: 'Les prochaines actions à explorer',
-        items: [
-          { icon: '📝', title: 'Modifier le README', desc: 'Clique sur le crayon ✏️ pour éditer' },
-          { icon: '📁', title: 'Ajouter des fichiers', desc: 'Add file → Upload files ou Create new file' },
-          { icon: '🔗', title: 'Partager le lien', desc: 'Copie l\'URL et envoie-la à ton prof' },
-          { icon: '🌿', title: 'Créer une branche', desc: 'Pour travailler sans casser le projet principal' },
-        ]
-      }
-    ]
-  },
+  const TOTAL = 10; // 0=hero, 1-8=steps, 9=final
+  let current = 0;
+  let startX = 0;
+  let isDragging = false;
+  let hintHidden = false;
 
-  // ══════════════════════════════════════════════
-  //  GUIDE 1 — Créer un compte GitHub (historique)
-  // ══════════════════════════════════════════════
-  {
-    id: 'github-account',
-    icon: '🐙',
-    title: 'Créer un compte GitHub',
-    date: 'Juin 2026',
-    isNew: false,
-    slides: [
-      {
-        type: 'hero',
-        emoji: '🐙',
-        title: 'Créer un compte <span>GitHub</span>',
-        sub: 'Guide interactif étape par étape — même sans expérience',
-        badges: [
-          { color: '#3fb950', label: 'Gratuit' },
-          { color: '#58a6ff', label: '5 minutes' },
-          { color: '#bc8cff', label: '8 étapes' },
-        ]
-      },
-      { type: 'step', num: 1, total: 8, title: 'Accéder au site GitHub', content: `
-        <p class="step-desc">Ouvre ton navigateur et tape l'adresse suivante :</p>
-        <div class="code-block">github.com</div>
-        <div class="mockup">
-          <div class="mockup-bar"><div class="mockup-dot m-red"></div><div class="mockup-dot m-yellow"></div><div class="mockup-dot m-green"></div></div>
-          <div class="mockup-url">🔒 github.com</div>
-          <div class="mockup-label">Page d'accueil de GitHub</div>
-        </div>
-        <p class="step-desc">Cherche le bouton <b>Sign up</b> en haut à droite et clique dessus.</p>` },
-      { type: 'step', num: 2, total: 8, title: 'Entrer ton adresse e-mail', content: `
-        <p class="step-desc">Saisis ton <b>adresse e-mail</b>, puis clique sur <b>Continue</b>.</p>
-        <div class="info-box"><span class="box-icon">✅</span><span>Une adresse Gmail ou scolaire convient parfaitement.</span></div>
-        <p class="step-desc">Si l'adresse est déjà utilisée, connecte-toi à ton compte existant.</p>` },
-      { type: 'step', num: 3, total: 8, title: 'Choisir un mot de passe', content: `
-        <p class="step-desc">Crée un mot de passe sécurisé — au moins <b>15 caractères</b>, ou 8 avec chiffres et symboles.</p>
-        <div class="warn-box"><span class="box-icon">⚠️</span><span>Note ton mot de passe dans un endroit sûr.</span></div>` },
-      { type: 'step', num: 4, total: 8, title: "Choisir un nom d'utilisateur", content: `
-        <p class="step-desc">Ton <b>username</b> apparaîtra dans tes URLs :</p>
-        <div class="code-block">github.com/ton-username</div>
-        <div class="info-box"><span class="box-icon">💡</span><span>Choisis quelque chose de professionnel : <b>prenom-nom</b>. Seul le tiret <b>-</b> est autorisé.</span></div>` },
-      { type: 'step', num: 5, total: 8, title: 'Préférences e-mail', content: `
-        <p class="step-desc">Tape <b>y</b> ou <b>n</b> pour les e-mails de communication, puis clique sur <b>Continue</b>.</p>
-        <div class="info-box"><span class="box-icon">ℹ️</span><span>Les e-mails de sécurité arrivent toujours quoi qu'il arrive.</span></div>` },
-      { type: 'step', num: 6, total: 8, title: 'Vérification humaine', content: `
-        <p class="step-desc">Résous le <b>CAPTCHA</b>, puis clique sur <b>Create account</b>.</p>
-        <div class="info-box"><span class="box-icon">💡</span><span>Si le puzzle ne charge pas, recharge la page.</span></div>` },
-      { type: 'step', num: 7, total: 8, title: 'Vérifier ton e-mail', content: `
-        <p class="step-desc">GitHub envoie un <b>code à 6 chiffres</b> à ton adresse. Colle-le dans les cases.</p>
-        <div class="warn-box"><span class="box-icon">📬</span><span>Vérifie le dossier <b>Spam</b> si tu ne le vois pas. Le code expire en 15 minutes.</span></div>` },
-      { type: 'step', num: 8, total: 8, title: 'Personnaliser ton profil', content: `
-        <p class="step-desc">Réponds aux questions ou clique sur <b>Skip personalization</b>.</p>
-        <div class="info-box"><span class="box-icon">🎉</span><span>Compte créé ! Tu peux maintenant créer ton premier dépôt.</span></div>` },
-      {
-        type: 'final',
-        title: 'Compte créé,<br><span>et maintenant ?</span>',
-        sub: 'Quelques premières actions pour bien démarrer',
-        items: [
-          { icon: '🗂️', title: 'Créer un dépôt', desc: 'Clique sur "New" depuis le dashboard' },
-          { icon: '⭐', title: 'Explorer des projets', desc: 'Mets des étoiles aux projets intéressants' },
-          { icon: '🔑', title: 'Activer la 2FA', desc: 'Settings → Password and authentication' },
-          { icon: '📝', title: 'Compléter ton profil', desc: 'Ajoute une photo et une bio' },
-        ]
-      }
-    ]
-  }
-];
-
-// ═══════════════════════════════════════════════════
-//  STATE & INIT
-// ═══════════════════════════════════════════════════
-let currentGuideIdx = 0, currentSlide = 0;
-let startX = 0, isDragging = false, touchMoved = false, hintHidden = false;
-
-function renderSlide(s) {
-  if (s.type === 'hero') return `<div class="slide slide-hero">
-    <div class="hero-octocat">${s.emoji}</div>
-    <h1 class="hero-title">${s.title}</h1>
-    <p class="hero-sub">${s.sub}</p>
-    <div class="badge-row">${s.badges.map(b=>`<div class="badge"><div class="dot" style="background:${b.color}"></div>${b.label}</div>`).join('')}</div>
-    <button class="start-btn" onclick="goTo(1)">Commencer →</button>
-  </div>`;
-  if (s.type === 'step') return `<div class="slide slide-step">
-    <div class="step-inner">
-      <span class="step-chip">Étape ${s.num} / ${s.total}</span>
-      <h2 class="step-title">${s.title}</h2>
-      ${s.content}
-    </div>
-  </div>`;
-  if (s.type === 'final') return `<div class="slide slide-final">
-    <div class="final-icon">🎉</div>
-    <h2 class="final-title">${s.title}</h2>
-    <p class="final-sub">${s.sub}</p>
-    <div class="next-steps">${s.items.map(it=>`<div class="next-item"><span class="ni-icon">${it.icon}</span><div class="ni-text"><b>${it.title}</b>${it.desc}</div></div>`).join('')}</div>
-    <button class="restart-btn" onclick="goTo(0)">↩ Revoir le guide</button>
-  </div>`;
-}
-
-function loadGuide(idx) {
-  currentGuideIdx = idx; currentSlide = 0;
-  const g = GUIDES[idx];
-  document.getElementById('slidesTrack').innerHTML = g.slides.map(renderSlide).join('');
-  document.getElementById('topbarTitle').textContent = g.title;
-  document.getElementById('topbarBadge').textContent = `${idx+1} / ${GUIDES.length}`;
-  buildDots(g.slides.length);
-  buildSidebar();
-  update();
-}
-
-function buildDots(total) {
-  const dc = document.getElementById('dotsContainer');
-  dc.innerHTML = '';
-  for (let i = 0; i < total; i++) {
-    const d = document.createElement('div');
-    d.className = 'dot-item' + (i===0?' active':'');
-    d.onclick = () => goTo(i);
-    dc.appendChild(d);
-  }
-}
-
-function buildSidebar() {
-  const list = document.getElementById('sidebarList');
-  list.innerHTML = '';
-  const addLabel = t => { const l=document.createElement('div'); l.className='sidebar-section-label'; l.textContent=t; list.appendChild(l); };
-  const addItem = (g,i) => {
-    const el = document.createElement('div');
-    el.className = 'guide-item'+(i===currentGuideIdx?' active':'');
-    el.innerHTML = `<div class="gi-icon">${g.icon}</div><div class="gi-info"><div class="gi-title">${g.title}</div><div class="gi-meta">${g.date} · ${g.slides.length-1} étapes</div></div>${g.isNew?'<span class="gi-new">NEW</span>':''}`;
-    el.onclick = () => { loadGuide(i); closeSidebar(); };
-    list.appendChild(el);
-  };
-  addLabel('Guide actuel'); addItem(GUIDES[0], 0);
-  if (GUIDES.length > 1) { addLabel('Historique'); GUIDES.slice(1).forEach((g,i) => addItem(g, i+1)); }
-}
-
-function update() {
-  const total = GUIDES[currentGuideIdx].slides.length;
   const track = document.getElementById('slidesTrack');
-  track.style.transform = `translateX(-${currentSlide*100}vw)`;
-  document.getElementById('progressBar').style.width = `${(currentSlide/(total-1))*100}%`;
-  document.getElementById('btnPrev').disabled = currentSlide===0;
-  const bn = document.getElementById('btnNext');
-  bn.disabled = currentSlide===total-1;
-  bn.innerHTML = currentSlide===total-2 ? '<span>Terminer</span> <span>🎉</span>' : '<span>Suivant</span> <span>→</span>';
-  document.querySelectorAll('.dot-item').forEach((d,i)=>d.classList.toggle('active',i===currentSlide));
-}
+  const progressBar = document.getElementById('progressBar');
+  const btnPrev = document.getElementById('btnPrev');
+  const btnNext = document.getElementById('btnNext');
+  const dotsContainer = document.getElementById('dotsContainer');
+  const swipeHint = document.getElementById('swipeHint');
 
-function goTo(n) {
-  const total = GUIDES[currentGuideIdx].slides.length;
-  currentSlide = Math.max(0, Math.min(total-1, n));
+  // Build dots
+  for (let i = 0; i < TOTAL; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot-item' + (i === 0 ? ' active' : '');
+    d.onclick = () => goTo(i);
+    d.style.cursor = 'pointer';
+    dotsContainer.appendChild(d);
+  }
+
+  function update() {
+    track.style.transform = `translateX(-${current * 100}vw)`;
+    progressBar.style.width = `${(current / (TOTAL - 1)) * 100}%`;
+    btnPrev.disabled = current === 0;
+    btnNext.disabled = current === TOTAL - 1;
+
+    // Update dots
+    document.querySelectorAll('.dot-item').forEach((d, i) => {
+      d.classList.toggle('active', i === current);
+    });
+
+    // Change next btn label on last step
+    if (current === TOTAL - 2) {
+      btnNext.innerHTML = '<span>Terminer</span> <span class="nav-arrow">🎉</span>';
+    } else if (current === TOTAL - 1) {
+      btnNext.disabled = true;
+    } else {
+      btnNext.innerHTML = '<span>Suivant</span> <span class="nav-arrow">→</span>';
+    }
+  }
+
+  function goTo(n) {
+    current = Math.max(0, Math.min(TOTAL - 1, n));
+    update();
+    if (!hintHidden && current > 0) {
+      hintHidden = true;
+      swipeHint.classList.add('hidden');
+    }
+  }
+
+  function next() { goTo(current + 1); }
+  function prev() { goTo(current - 1); }
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next();
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   prev();
+  });
+
+  // Touch swipe — ignorer les taps sur boutons
+  const wrapper = document.getElementById('slidesWrapper');
+  let touchMoved = false;
+
+  wrapper.addEventListener('touchstart', e => {
+    // Ne pas intercepter si le touch est sur un bouton
+    if (e.target.closest('button')) return;
+    startX = e.touches[0].clientX;
+    isDragging = true;
+    touchMoved = false;
+  }, { passive: true });
+
+  wrapper.addEventListener('touchmove', e => {
+    if (!isDragging) return;
+    const dx = e.touches[0].clientX - startX;
+    if (Math.abs(dx) > 10) touchMoved = true;
+    const offset = current * 100 + (-dx / window.innerWidth * 100);
+    track.style.transition = 'none';
+    track.style.transform = `translateX(-${Math.max(0, Math.min((TOTAL-1)*100, offset))}vw)`;
+  }, { passive: true });
+
+  wrapper.addEventListener('touchend', e => {
+    if (!isDragging) return;
+    const dx = e.changedTouches[0].clientX - startX;
+    track.style.transition = 'transform 0.45s cubic-bezier(0.4, 0, 0.2, 1)';
+    if (touchMoved && dx < -50) next();
+    else if (touchMoved && dx > 50) prev();
+    else update();
+    isDragging = false;
+    touchMoved = false;
+  });
+
+  // Mouse drag (desktop)
+  wrapper.addEventListener('mousedown', e => {
+    if (e.target.closest('button')) return;
+    startX = e.clientX;
+    isDragging = true;
+  });
+  wrapper.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+    const dx = e.clientX - startX;
+    const offset = current * 100 + (-dx / window.innerWidth * 100);
+    track.style.transition = 'none';
+    track.style.transform = `translateX(-${Math.max(0, Math.min((TOTAL-1)*100, offset))}vw)`;
+  });
+  wrapper.addEventListener('mouseup', e => {
+    if (!isDragging) return;
+    const dx = e.clientX - startX;
+    track.style.transition = 'transform 0.45s cubic-bezier(0.4, 0, 0.2, 1)';
+    if (dx < -50) next();
+    else if (dx > 50) prev();
+    else update();
+    isDragging = false;
+  });
+  wrapper.addEventListener('mouseleave', () => {
+    if (isDragging) { isDragging = false; update(); track.style.transition = 'transform 0.45s cubic-bezier(0.4, 0, 0.2, 1)'; }
+  });
+
+  // Init
   update();
-  if (!hintHidden && currentSlide>0) { hintHidden=true; document.getElementById('swipeHint').classList.add('hidden'); }
-}
-function next() { goTo(currentSlide+1); }
-function prev() { goTo(currentSlide-1); }
 
-document.addEventListener('keydown', e => {
-  if (e.key==='ArrowRight'||e.key==='ArrowDown') next();
-  if (e.key==='ArrowLeft'||e.key==='ArrowUp') prev();
-});
-
-function toggleSidebar() { document.getElementById('sidebar').classList.contains('open') ? closeSidebar() : openSidebar(); }
-function openSidebar() { document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebarOverlay').classList.add('open'); }
-function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('open'); }
-
-const swipeZone = document.getElementById('swipeZoneLeft');
-let szX=0, szD=false;
-swipeZone.addEventListener('touchstart', e=>{szX=e.touches[0].clientX;szD=true;},{passive:true});
-swipeZone.addEventListener('touchend', e=>{if(!szD)return; if(e.changedTouches[0].clientX-szX>40)openSidebar(); szD=false;});
-
-const wrapper = document.getElementById('slidesWrapper');
-wrapper.addEventListener('touchstart', e=>{if(e.target.closest('button'))return; startX=e.touches[0].clientX;isDragging=true;touchMoved=false;},{passive:true});
-wrapper.addEventListener('touchmove', e=>{
-  if(!isDragging)return;
-  const dx=e.touches[0].clientX-startX;
-  if(Math.abs(dx)>10)touchMoved=true;
-  const total=GUIDES[currentGuideIdx].slides.length;
-  const offset=currentSlide*100+(-dx/window.innerWidth*100);
-  const t=document.getElementById('slidesTrack');
-  t.style.transition='none';
-  t.style.transform=`translateX(-${Math.max(0,Math.min((total-1)*100,offset))}vw)`;
-},{passive:true});
-wrapper.addEventListener('touchend', e=>{
-  if(!isDragging)return;
-  const dx=e.changedTouches[0].clientX-startX;
-  document.getElementById('slidesTrack').style.transition='transform .45s cubic-bezier(.4,0,.2,1)';
-  if(touchMoved&&dx<-50)next(); else if(touchMoved&&dx>50)prev(); else update();
-  isDragging=false;touchMoved=false;
-});
-wrapper.addEventListener('mousedown',e=>{if(e.target.closest('button'))return;startX=e.clientX;isDragging=true;});
-wrapper.addEventListener('mousemove',e=>{
-  if(!isDragging)return;
-  const total=GUIDES[currentGuideIdx].slides.length;
-  const offset=currentSlide*100+(-(e.clientX-startX)/window.innerWidth*100);
-  const t=document.getElementById('slidesTrack');
-  t.style.transition='none';
-  t.style.transform=`translateX(-${Math.max(0,Math.min((total-1)*100,offset))}vw)`;
-});
-wrapper.addEventListener('mouseup',e=>{
-  if(!isDragging)return;
-  const dx=e.clientX-startX;
-  document.getElementById('slidesTrack').style.transition='transform .45s cubic-bezier(.4,0,.2,1)';
-  if(dx<-50)next();else if(dx>50)prev();else update();
-  isDragging=false;
-});
-wrapper.addEventListener('mouseleave',()=>{ if(isDragging){isDragging=false;document.getElementById('slidesTrack').style.transition='transform .45s cubic-bezier(.4,0,.2,1)';update();} });
-
-loadGuide(0);
-setTimeout(()=>document.getElementById('swipeHint').classList.add('hidden'),4000);
+  // Auto-hide swipe hint after 4s
+  setTimeout(() => {
+    swipeHint.classList.add('hidden');
+  }, 4000);
 </script>
 </body>
 </html>
